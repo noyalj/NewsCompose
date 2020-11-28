@@ -1,29 +1,24 @@
 package com.noyalj.newscompose.ui.main
 
+import android.content.Context
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Strings
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.List
+import com.noyalj.newscompose.R
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.imageFromResource
 import androidx.compose.ui.platform.setContent
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import androidx.ui.tooling.preview.Preview
-import com.google.android.material.appbar.AppBarLayout
-import com.noyalj.newscompose.components.NewsItem
+import com.noyalj.newscompose.ui.items.NewsItem
 import com.noyalj.newscompose.theming.NewsComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
@@ -53,14 +48,38 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun MainCompose(mainViewModel: MainViewModel) {
 
-    Column {
-        TopAppBar(
-            title = { Text(text = "Latest News") },
-            backgroundColor = MaterialTheme.colors.onPrimary,
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Latest News",
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.padding(start = 0.dp)
+                    )
+                },
+                backgroundColor = MaterialTheme.colors.onPrimary,
+//                navigationIcon = {
+//                    IconButton(onClick = {}) {
+//                        Icon(
+//                            asset = vectorResource(id = R.drawable.ic_baseline_offline_bolt_24),
+//                            tint = MaterialTheme.colors.secondary
+//                        )
+//                    }
+//                },
+//                actions = {
+//                    IconButton(onClick = {}) {
+//                        Icon(asset = vectorResource(id = R.drawable.ic_baseline_search_24))
+//                    }
+//                }
+            )
+        },
+        bodyContent = {
+            NewsData(mainViewModel = mainViewModel)
+        }
+    )
 
-        )
-        NewsData(mainViewModel = mainViewModel)
-    }
+
 }
 
 @ExperimentalCoroutinesApi
@@ -69,7 +88,7 @@ fun NewsData(mainViewModel: MainViewModel) {
 
     val articles = mainViewModel.getLatestNews().collectAsLazyPagingItems()
 
-    LazyColumn{
+    LazyColumn {
         items(articles) { article ->
             NewsItem(article = article!!)
         }

@@ -1,11 +1,13 @@
 package com.noyalj.newscompose.di
 
+import android.content.Context
 import com.noyalj.newscompose.data.NewsService
 import com.noyalj.newscompose.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
@@ -20,8 +22,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideBaseUrl(): String {
-        return BASE_URL
+    fun provideCountryCode( @ApplicationContext context: Context): String {
+        return context.resources.configuration.locales[0].country
     }
 
     @Provides
@@ -55,12 +57,11 @@ object NetworkModule {
     @Singleton
     fun provideRetrofitClient(
         okHttpClient: OkHttpClient,
-        baseUrl: String,
         converter: Converter.Factory
     ): Retrofit {
 
         return Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(BASE_URL)
             .addConverterFactory(converter)
             .client(okHttpClient)
             .build()
